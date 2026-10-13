@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db 
+import models 
 
 app = Flask(__name__)
 
@@ -7,23 +8,15 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///marketplace.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
-
-
-class Listing(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-
+db.init_app(app)
 
 @app.route("/")
 def index():
-    listings = Listing.query.order_by(Listing.id.desc()).all()
+    listings = models.Listing.query.order_by(models.Listing.id.desc()).all()
     return render_template("index.html", listings=listings)
 
 
-@app.route("/create", methods=["GET", "POST"])
+@app.route("/create_listing", methods=["GET", "POST"])
 def create_listing():
     if request.method == "POST":
         title = request.form["title"].strip()
@@ -48,7 +41,7 @@ def create_listing():
                 error="Please enter a valid price."
             )
 
-        listing = Listing(
+        listing = models.Listing(
             title=title,
             description=description,
             price=price_value
@@ -60,6 +53,31 @@ def create_listing():
         return redirect(url_for("index"))
 
     return render_template("create_listing.html")
+
+@app.route("/register_user", methods = ["GET", "POST"])
+def create_user():
+    if request.method == "POST":
+            email = request.form["email"].strip()
+            username = request.form["username"].strip()
+            password = request.form["password"].strip()
+    
+            if not email or not username or not password:
+                return render_template(
+                    "create_listing.html",
+                    error="All fields are required."
+                )
+            user = models.User(
+                email = email, 
+                username=username
+            )
+
+            user.set_password(password)
+
+            db.session.add(user)
+            db.session.commit()
+
+            return redirect(url_for("index"))
+    return render_template("register_user.html")
 
 
 if __name__ == "__main__":

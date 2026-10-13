@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lan = "en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Listing - Campus Marketplace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1> User Registration</h1>
+         <form method="POST">
+
+            <label for="email">Email</label>
+            <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Example: example@gmail.com"
+                required
+            >
+
+            <label for="username">Username</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Example: John_Doe64"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                type="text"
+                id="password"
+                name="password"
+                placeholder="Example: 12345"
+                required
+            >
+
+            <button type="submit">Complete Registration</button>
+
+        </form>
+
+         <a href="/">Back to Marketplace</a>
+
+    </div>
+
+</body>
+
+
+
+</html>
